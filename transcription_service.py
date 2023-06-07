@@ -1,7 +1,7 @@
 """
 MIT License
 
-Copyright (c) 2023 David Tsui
+Copyright (c) 2023 David Rich Tsui
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,9 @@ openai.api_key = os.getenv('OPENAI_API_KEY', '')
 
 class TranscriptionService:
     def __init__(self, project_id, bucket_name):
+        """
+        Initialize the TranscriptionService with project ID and bucket name.
+        """
         self.project_id = project_id
         self.bucket_name = bucket_name
         self.storage_client = storage.Client(project=project_id)
@@ -45,6 +48,9 @@ class TranscriptionService:
         self.max_length = 2458  # Make max_length a class attribute instead of a global variable
 
     def audio_to_wav(self, audio_file_name, output_file):
+        """
+        Convert audio file to WAV format.
+        """
         file_extension = os.path.splitext(audio_file_name)[-1][1:]
         stereo = AudioSegment.from_file(audio_file_name, format=file_extension)
         mono = stereo.set_channels(1)
@@ -53,6 +59,9 @@ class TranscriptionService:
         return output_file
 
     def google_transcribe(self, filepath, audio_file_name):
+        """
+        Transcribe audio using Google Cloud Speech-to-Text.
+        """
         filepath = os.path.join(filepath, audio_file_name)
         wav_file_name = self.audio_to_wav(filepath, filepath.replace(os.path.splitext(audio_file_name)[-1], ".wav"))
         destination_blob_name = audio_file_name.replace(os.path.splitext(audio_file_name)[-1], ".wav")
@@ -66,6 +75,9 @@ class TranscriptionService:
         return transcript
 
     def transcribe_audio(self, gcs_uri):
+        """
+        Perform audio transcription using Google Cloud Speech-to-Text.
+        """
         transcript = ''
         audio = speech.RecognitionAudio(uri=gcs_uri)
         diarization_config = speech.SpeakerDiarizationConfig(
@@ -85,6 +97,9 @@ class TranscriptionService:
         return transcript
 
     def speaker_diarization(self, response):
+        """
+        Perform speaker diarization on the transcribed audio.
+        """
         transcript = ''
         result = response.results[-1]
         words_info = result.alternatives[0].words
@@ -101,23 +116,38 @@ class TranscriptionService:
         return transcript
 
     def upload_blob(self, source_file_name, destination_blob_name):
+        """
+        Upload a file to Google Cloud Storage.
+        """
         bucket = self.storage_client.get_bucket(self.bucket_name)
         blob = bucket.blob(destination_blob_name)
         blob.upload_from_filename(source_file_name)
 
     def delete_blob(self, blob_name):
+        """
+        Delete a file from Google Cloud Storage.
+        """
         bucket = self.storage_client.get_bucket(self.bucket_name)
         blob = bucket.blob(blob_name)
         blob.delete()
 
     def write_transcripts(self, transcript_filename, transcript, output_filepath):
+        """
+        Write the transcript to a file in the output directory.
+        """
         with open(os.path.join(output_filepath, transcript_filename), "w") as transcript_file:
             transcript_file.write(transcript)
 
     def chunk_transcript(self, text, length):
+        """
+        Divide a transcript into chunks of specified length.
+        """
         return textwrap.wrap(text, length)
 
     def generate_summary(self, text):
+        """
+        Generate a summary of the transcript using OpenAI's GPT-3.
+        """
         response = None
 
         while True:
@@ -145,6 +175,9 @@ class TranscriptionService:
                     raise e
 
     def generate_minutes(self, text):
+        """
+        Generate meeting minutes with next step action items using OpenAI's GPT-3.
+        """
         max_length = 1842
         response = None
 
@@ -173,6 +206,9 @@ class TranscriptionService:
                     raise e
 
     def summarize_transcript(self, transcript):
+        """
+        Generate summary and meeting minutes for the transcript.
+        """
         with ThreadPoolExecutor(max_workers=2) as executor:
             future_summary = executor.submit(self.generate_summary, transcript)
             future_minutes = executor.submit(self.generate_minutes, transcript)
