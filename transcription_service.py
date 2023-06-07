@@ -20,6 +20,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+This code makes use of the following third-party libraries, which have their own licenses:
+
+- `google-cloud-speech`: [Apache License 2.0](https://github.com/googleapis/python-speech/blob/main/LICENSE)
+- `google-cloud-storage`: [Apache License 2.0](https://github.com/googleapis/python-storage/blob/main/LICENSE)
+- `pydub`: [MIT License](https://github.com/jiaaro/pydub/blob/master/LICENSE)
+- `openai`: [MIT License](https://github.com/openai/openai-python/blob/main/LICENSE)
+
+Please refer to the respective license links for more details.
 """
 
 import os

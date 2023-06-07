@@ -59,7 +59,18 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the MIT License. See the [MIT License](LICENSE) file for details.
+
+## Dependencies
+
+This project makes use of the following third-party libraries, which have their own licenses:
+
+- `google-cloud-speech`: [Apache License 2.0](https://github.com/googleapis/python-speech/blob/main/LICENSE)
+- `google-cloud-storage`: [Apache License 2.0](https://github.com/googleapis/python-storage/blob/main/LICENSE)
+- `pydub`: [MIT License](https://github.com/jiaaro/pydub/blob/master/LICENSE)
+- `openai`: [MIT License](https://github.com/openai/openai-python/blob/main/LICENSE)
+
+Please refer to the respective license links for more details.
 
 ---
 
